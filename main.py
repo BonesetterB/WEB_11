@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Depends,HTTPException,status
 from src.database.db import get_db
 from sqlalchemy.orm import Session
-from sqlalchemy import text,or_,func
+from sqlalchemy import text,and_,func
 from src.database.model import Contact
 from src.schemas import ContactModel,ContactResponse
 from typing import List
@@ -104,7 +104,7 @@ async def HpB(db: Session = Depends(get_db)):
     end_date = current_date + timedelta(days=7)
 
 
-    contacts = db.query(Contact).filter(or_(
+    contacts = db.query(Contact).filter(and_(
             func.extract('month', Contact.birthday) >= current_date.month,
             func.extract('day', Contact.birthday) >= current_date.day,
             func.extract('day', Contact.birthday) <= end_date.day
